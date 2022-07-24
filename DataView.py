@@ -13,6 +13,7 @@ from functionsNew_v8 import MapChart_new,DatachartList_new,dataimport_filename,d
 import numpy as np
 import statistics
 import re #for regex recognision in text input
+from bokeh.events import DoubleTap
 
 #0.2 Changelog-> Make MultiChoice for plots appering/disappearing.
 #0.3 Changelog-> Add your data with Fileinput - On Open, Loads Lap1.
@@ -472,6 +473,215 @@ def Lap_Splitter(source): #Self Contained Layout & Callbacks(except tab exit( Do
     lay = layout([layup],[LapTime_input],[row(Done_Button,Cut_From_Back,Split_Button,Wrong_Input)],[Cancel_Button])
     return lay
 
+def GPS_LapSplitter(source):
+    """_----------------------------------------------------_CALLBACKS_----------------------------------------------------_"""
+    def make2Points(event):
+        Coords=[event.x,event.y]
+        pointlist.append(Coords)
+        MapGlyphs = mapPlot.renderers
+        source_GPS = MapGlyphs[1].data_source# The source(ColumnDataSource) that contains the gps data. 
+        dict_GPS = source_GPS.data #Get the dict of the data 
+        df_GPS = pd.DataFrame.from_dict(dict_GPS)#Make Data a DataFrame
+        if len(MapGlyphs)<3: #map should have 2 glyphs. Tile and a scatter plot. If it has only these create a new source and a new glyph. 
+            source2 = ColumnDataSource(dict(x=[i[0] for i in pointlist], y=[i[1] for i in pointlist]), name = 'LineForGPS')#Create a new source
+            mapPlot.scatter(x = 'x', y = 'y',source = source2, color = 'red')
+
+            #PlotGps points that are included in the selection. 
+            point1 = np.array(pointlist[0])
+            ClosePoints = findClosePoints(df_GPS,point1)
+            source3 = ColumnDataSource(ClosePoints) #ClosePoints Source
+            plot_map(mapPlot,source3,'black','black')
+        else: #if it has at least 1 point that was created already
+            #Get Data
+            source2 = MapGlyphs[2].data_source #the source for the last renderer, which is the points you make renderer.
+
+
+            #Plot Line
+            toplot = pointlist[-2:]
+            source2.data = dict(x=[i[0] for i in toplot], y=[i[1] for i in toplot])        
+            mapPlot.line(x = 'x',y = 'y',source = source2,color = 'red')
+
+            #Plot GPS points that are included in the selection
+            point1 = np.array(toplot[0])
+            ClosePoints = findClosePoints(df_GPS,point1)
+            source3 = MapGlyphs[3].data_source #ClosePoints Source
+            source3.data = ClosePoints
+            #ShowSplitLap Button
+            Split_button.visible = True
+        
+    def LapTimes_GPS():
+        #Input is the 2 points that make the line where you count the laps from. 
+        #Gives laptimes. Must have access to the Map Figure object, to get the GPS Data. 
+
+        #Load GPS Data
+        MapGlyphs = mapPlot.renderers 
+        source_GPS = MapGlyphs[1].data_source# The source(ColumnDataSource) that contains the gps data. 
+        dict_GPS = source_GPS.data #Get the dict of the data 
+        df_GPS = pd.DataFrame.from_dict(dict_GPS)#Make Data a DataFrame
+
+        #Make arrays of the points of the lap line, calculate its vector, with the origin on Point1
+        source_line = MapGlyphs[2].data_source #Line source is the last added to the map. 
+        dict_line = source_line.data
+        line_points = [[dict_line['x'][0],dict_line['y'][0]],[dict_line['x'][1],dict_line['y'][1]]]
+
+        point1 = np.array(line_points[0])
+        point2 = np.array(line_points[1])
+        linevector = point2-point1
+        
+        #Find Close Points to line
+        ClosePoints = findClosePoints(df_GPS,point1)
+
+        #Plot all the points that are considered Close to the line with Black dots. 
+        plot_map(mapPlot,ColumnDataSource(ClosePoints),'black','red')
+
+        #While Setup
+        while_counter = 1
+        laptimes = []
+
+        #While there are remaining Close Points, keep goint. 
+        while while_counter < 1000: 
+            ClosePoints1Lap = ClosePoints[ClosePoints['time']-ClosePoints['time'].loc[0] < 10] #Get The points for 1 lap. These are points that are within 10 seconds of the first close point
+            ClosePoints = ClosePoints[ClosePoints['time']-ClosePoints['time'].loc[0] >= 10]# Remove points for 1 lap from Close points. The first close point becomes the first point for the next lap etc
+
+            #Re index both DataFrames
+            ClosePoints.index = range(len(ClosePoints.index)) 
+            ClosePoints1Lap.index = range(len(ClosePoints1Lap.index))        
+            #While Stop Condition
+            if len(ClosePoints) < 2: #if you finish the list of close points. 
+                while_counter = 10000
+            #Make an array of the mercator Coordinates for the Points close to the line for one lap.   
+            ClosePointsLap1_array = ClosePoints1Lap[['Longitude_converted','Latitude_converted']].to_numpy()
+            #Calculate vectors from lap close points with point1 of the lapline as the origin. 
+            ClosePointsLap1_vectors =np.array([i-point1 for i in ClosePointsLap1_array])
+            #Calculate the projection vectors from the lap close point vectors (point1 of the lapline as the origin.)
+            ClosePointsLap1_projection_vectors = np.array([ i/np.inner(linevector,linevector)*linevector for i in np.inner(ClosePointsLap1_vectors,linevector)])
+            #Calculte the distance vectors from the lap close points to the line(vertical to line, point1 of the lapline as the origin.)
+            ClosePointsLap1_distance_vectors = ClosePointsLap1_projection_vectors-ClosePointsLap1_vectors
+            #Calculate the distances(magnitude of vectors) from the lap close points to the line(vertical to line, point1 of the lapline as the origin.)
+            ClosePointsLap1_distances= [np.linalg.norm(i) for i in ClosePointsLap1_distance_vectors]
+
+            #Add the distances & distance vectors, with origin the 1rst point of the lapline to the lap close points df
+            ClosePoints1Lap[['Distance-X_origin@point1_of_line','Distance-Y_origin@point1_of_line']]  = pd.DataFrame(ClosePointsLap1_distance_vectors, columns = ['Distance-X','Distance-Y'])
+            ClosePoints1Lap['Distance_Magnitude'] = pd.DataFrame(ClosePointsLap1_distances, columns=['Distance_Magnitude'])
+
+
+            try:
+                #The Last point that has a negative Y coordinate, with respect to the CS based at point1
+                #is the last point before the line.     
+                p_bf = ClosePoints1Lap.loc[len(ClosePoints1Lap[ClosePoints1Lap['Distance-Y_origin@point1_of_line']<=0])-1] #PointJustBeforeTheLine
+                #The next point from the last point before the line is the point just after the line.
+                p_af = ClosePoints1Lap.loc[len(ClosePoints1Lap[ClosePoints1Lap['Distance-Y_origin@point1_of_line']<=0])] #PointJustAfterTheLine
+            
+                #Time and distance between the points before and after the line. 
+                p_dt = p_af['time']-p_bf['time'] #Time between PointJustBeforeTheLine & PointJustAfterTheLine
+                p_ddist = p_af['Distance_Magnitude']+p_bf['Distance_Magnitude'] #distance between PointJustBeforeTheLine & PointJustAfterTheLine
+                
+                #Calculate Laptime. depending on how close each point is to the line, you add(or remove) a fraction of the time between the points. 
+                laptime1 = p_bf['time'] + p_bf['Distance_Magnitude']/p_ddist*p_dt #Calculate laptime by adding to the time of point before the line
+                laptime2 = p_af['time'] - p_af['Distance_Magnitude']/p_ddist*p_dt #Calculate laptime by subtracting from time of point after the line
+                
+                #Random plot with red dots for the data you have processed
+                plot_map(mapPlot,ColumnDataSource(ClosePoints1Lap),'red','red')
+
+                #Add the laptime to the laptimes list. Because you work with total times, remove the previous laptimes 
+                laptimes.append((laptime1+laptime2)/2-sum(laptimes))
+            except:
+                while_counter = 10000
+                print("Not All Points close to LapLine were used. Check that the laptimes make sense.")
+                print("To redo, pick a LapLine where in the black points, the car is not stationary or very slow")
+
+            while_counter = while_counter + 1
+        
+        #region LapSplitter
+        counter = 1
+        for laptime in laptimes:
+            plotsource = source_GPS 
+            
+            #Make Dir to Sava Lap Files 
+            try:
+                os.mkdir('./Logs')
+                print('Logs Dir created')
+            except:
+                try:
+                    os.mkdir('./Logs/'+source.name[:-4]+'-GPSLaps')
+                    print('GPSLaps Dir created')
+                except:
+                    pass
+                                
+            #set Lap Data to save & remaining data
+            source_remaining = pd.DataFrame(plotsource.data) #Get remaining data
+
+            to_save = source_remaining[source_remaining['time']<=laptime]
+            source_remaining = source_remaining[source_remaining['time']>laptime]
+            
+            #Save Data to be saved
+            to_save.to_csv('./Logs/'+source.name[:-4]+'-GPSLaps/'+source.name[:-4]+'-Lap'+str(counter)+'.csv')
+
+            #Reformat remaining data for correct index 
+            try:        
+                del source_remaining['index']
+            except:
+                pass
+            source_remaining.index = range(len(source_remaining.index))        
+            
+            #Offset time for remaining data so it starts from 0 
+            newtime = source_remaining['time']-source_remaining['time'].loc[1] #Must Make new var. 
+            source_remaining['time'] = newtime     
+
+            #Progress text 
+            LoadingDonetext.text = LoadingDonetext.text + ' | Lap'+str(counter)+' Saved. Time(sec): '+str(round(laptimes[counter-1],2))
+            #Update Lap Counter
+            counter = counter + 1
+
+            #Update Plots
+            plotsource.data = source_remaining    
+        
+        plotsource_df = pd.DataFrame(plotsource.data)
+        plotsource_df.to_csv('./Logs/'+source.name[:-4]+'-Laps/'+source.name[:-4]+'-Remaining.csv')
+        LoadingDonetext.text = LoadingDonetext.text +  ' | Done!'
+        Done_Button.label = 'Done'
+        Done_Button.visible = True
+
+    def quickhideSplitLapsBut():
+        Split_button.visible = False
+        LoadingDonetext.visible = True
+        Done_Button.visible = False
+        LapTimes_GPS()
+
+    def findClosePoints(df_GPS,point1):
+        #Give Pandas DataFrame and first line point, Return Close points dataframe, with ordered index 
+        #Remove Duplicate Coordinate Points. There is a slight difference in the laptimes 
+        #if you keep the first or the last occurence of the coordinate points in the data.  
+        NoDuplicatsGPSpoints = df_GPS.drop_duplicates(subset=['Latitude_converted', 'Longitude_converted'], keep='first')
+
+        #Get All The GPS Points that are close to point1 of the line. 
+        ClosePoints = NoDuplicatsGPSpoints[abs(NoDuplicatsGPSpoints['Latitude_converted']-point1[1])<100] #100 is arbitrary, just because its big. 
+        ClosePoints = ClosePoints[abs(ClosePoints['Longitude_converted']-point1[0])<100]
+        ClosePoints = ClosePoints[ClosePoints['Speed (m/s)'] > 20] #Limit Speed. 
+        #Re index Close Points DataFrame
+        del ClosePoints['index']
+        ClosePoints.index = range(len(ClosePoints.index)) 
+        return ClosePoints
+
+    #__________________________________ LAYOUT_____________________________________
+
+
+    #endregion
+    #region: LAYOUT
+    Split_button = Button(label = 'Split Laps', name = 'SplitLap', visible = False)
+    Split_button.on_click(quickhideSplitLapsBut)
+    guidetext = PreText(text = 'Double Click sequentially on the map to create the LapLine, to split the laps. \nThe black points are computed to be the closest points to the LapLine where the car is not stationary or very slow. Check if they make sense, and then click Split Laps once.It takes some time. \nThe Laps are in ./Logs/[filename]-GPSLaps', sizing_mode = 'stretch_width')
+    LoadingDonetext = PreText(text = 'Wait...', visible = False, sizing_mode = 'stretch_height')
+    pointlist = []
+    Done_Button = Button(label = 'Exit', name = 'DoneGPSSplitLap', visible = True)
+    Done_Button.on_click(Done)
+    mapPlot = MapChart_new(source,10)
+    mapPlot.sizing_mode = 'stretch_both'
+
+    mapPlot.on_event(DoubleTap, make2Points)
+    lay = layout([[guidetext],[mapPlot],[Split_button,LoadingDonetext],[Done_Button]])
+    #endregion
+    return lay
 
 #--------------------------------Callback Functions for Widgets-----------------------------------
 #Callback functions triggered on_change of a widget must have (attr,old,new) style inputs.
@@ -625,14 +835,14 @@ def Misalignment_All_Popup(): #Enter a Popup tab you cant exit, unless you press
         else:
             source = dataimport(file,name)
         lay = Misalignment_All(source)
-        NewTab = Panel(child = lay ,title = 'HAHAHA')
+        NewTab = Panel(child = lay ,title = 'Misalign_All')
         TabsModel.tabs[-1] = NewTab
-
+    #File Choice Layout.
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
     Cancel_Button = Button(label = 'Cancel')
     Cancel_Button.on_click(Done)
-    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'Misalign_All')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
@@ -647,13 +857,14 @@ def Misalignment_LongVert_Popup(): #Enter a Popup tab you cant exit, unless you 
         else:
             source = dataimport(file,name)
         lay = Misalignment_LongVert(source)
-        NewTab = Panel(child = lay ,title = 'HAHAHA')
+        NewTab = Panel(child = lay ,title = 'Misalign_LongVert')
         TabsModel.tabs[-1] = NewTab
+    #File Choice Layout.
     Cancel_Button = Button(label = 'Cancel')
     Cancel_Button.on_click(Done)    
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
-    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'Misalign_LongVert')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
@@ -683,13 +894,36 @@ def LapSplitter_Popup():
         else:
             source = dataimport(file,name)
         lay = Lap_Splitter(source)
-        NewTab = Panel(child = lay ,title = 'HAHAHA')
+        NewTab = Panel(child = lay ,title = 'Manual_LapSplit')
         TabsModel.tabs[-1] = NewTab
+    #File Choice Layout.
     Cancel_Button = Button(label = 'Cancel')
     Cancel_Button.on_click(Done)
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
-    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'Manual_LapSplit')
+    TabsModel.tabs.append(NewTab)
+    old_activeTab = TabsModel.active
+    TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
+    TabsModel.disabled = True
+
+def GPS_LapSplitter_Popup():
+    def inputfile_callback(a,b,name):
+        file_bytes = base64.b64decode(inputfile.value)
+        file = io.BytesIO(file_bytes)
+        if toggle_datetime.active == True:
+            source = dataimport(file,name,'DateTIMMMEEEE~')
+        else:
+            source = dataimport(file,name)
+        lay = GPS_LapSplitter(source)
+        NewTab = Panel(child = lay ,title = 'GPS_LapSplit')
+        TabsModel.tabs[-1] = NewTab
+    #File Choice Layout.
+    Cancel_Button = Button(label = 'Cancel')
+    Cancel_Button.on_click(Done)
+    inputfile = FileInput(width = 230)
+    inputfile.on_change('filename',inputfile_callback)
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'GPS_LapSplit')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
@@ -741,12 +975,14 @@ width=500, height=100)
 
 but_LapSplit = Button(label = 'Manual Lap Splitter')
 but_LapSplit.on_click(LapSplitter_Popup)
+but_GPSLapSplit = Button(label = 'GPS Lap Splitter')
+but_GPSLapSplit.on_click(GPS_LapSplitter_Popup)
 but_Misalignment_ALL = Button(label = 'Misalignment Correction - All axes')
 but_Misalignment_ALL.on_click(Misalignment_All_Popup)
 but_Misalignment_longvert = Button(label = 'Misalignment Correction - Long-Vert axes')
 but_Misalignment_longvert.on_click(Misalignment_LongVert_Popup)
 
-SPlay = layout([fileinput,pre],[toggle_datetime,predt],[but_LapSplit,but_Misalignment_ALL,but_Misalignment_longvert])
+SPlay = layout([fileinput,pre],[toggle_datetime,predt],[but_LapSplit,but_GPSLapSplit,but_Misalignment_ALL,but_Misalignment_longvert])
 
 StartTab = Panel(child = SPlay,title = "StartTab")#Create StartTab tab
 TabsModel = Tabs(tabs = [StartTab] ,name = 'Tabs') #Create bokeh Tabs object -> Shared with functions
