@@ -630,7 +630,9 @@ def Misalignment_All_Popup(): #Enter a Popup tab you cant exit, unless you press
 
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
-    NewTab = Panel(child = row([inputfile,toggle_datetime]) ,title = 'HAHAHA')
+    Cancel_Button = Button(label = 'Cancel')
+    Cancel_Button.on_click(Done)
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
@@ -647,10 +649,11 @@ def Misalignment_LongVert_Popup(): #Enter a Popup tab you cant exit, unless you 
         lay = Misalignment_LongVert(source)
         NewTab = Panel(child = lay ,title = 'HAHAHA')
         TabsModel.tabs[-1] = NewTab
-
+    Cancel_Button = Button(label = 'Cancel')
+    Cancel_Button.on_click(Done)    
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
-    NewTab = Panel(child = row([inputfile,toggle_datetime]) ,title = 'HAHAHA')
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
@@ -682,10 +685,11 @@ def LapSplitter_Popup():
         lay = Lap_Splitter(source)
         NewTab = Panel(child = lay ,title = 'HAHAHA')
         TabsModel.tabs[-1] = NewTab
-
+    Cancel_Button = Button(label = 'Cancel')
+    Cancel_Button.on_click(Done)
     inputfile = FileInput(width = 230)
     inputfile.on_change('filename',inputfile_callback)
-    NewTab = Panel(child = row([inputfile,toggle_datetime]) ,title = 'HAHAHA')
+    NewTab = Panel(child = row([inputfile,toggle_datetime,Cancel_Button]) ,title = 'HAHAHA')
     TabsModel.tabs.append(NewTab)
     old_activeTab = TabsModel.active
     TabsModel.active = (len(TabsModel.tabs)-1) #switch Tab to New One
