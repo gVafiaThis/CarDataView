@@ -232,6 +232,7 @@ def Misalignment_All(source):#Self Contained Layout & callbacks(except tab exit)
         # print(source.name)
         try:
             os.mkdir('./Logs/')
+            print('Logs Dir Created')
         except:
             pass
         df_source = pd.DataFrame(source.data)
@@ -338,6 +339,7 @@ def Misalignment_LongVert(source):#Self Contained Layout & callbacks(except tab 
         # print(source.name)
         try:
             os.mkdir('./Logs/')
+            print('Logs Dir Created')
         except:
             pass
         df_source = pd.DataFrame(source.data)
@@ -377,14 +379,11 @@ def Lap_Splitter(source): #Self Contained Layout & Callbacks(except tab exit( Do
             Wrong_Input.text = """           """
             laptime = 60*float(list_of_matches[0][0:2]) + float(list_of_matches[0][3:])
             Split_Button.visible = True
-        
-           
-            
+                    
         elif len(list_of_matches2)>0:
             Wrong_Input.text = """           """            
             laptime = float(list_of_matches2[0])
             Split_Button.visible = True
-        
 
         else:
             Wrong_Input.text = """Wrong Input"""
@@ -398,11 +397,15 @@ def Lap_Splitter(source): #Self Contained Layout & Callbacks(except tab exit( Do
         #Make Dir to Sava Lap Files 
         try:
             os.mkdir('./Logs')
-            os.mkdir('./Logs/'+source.name[:-4]+'-Laps')
+            print('Logs Dir created')
         except:
-            print('Dir Not created')
+            
             pass        
-         
+        try:
+            os.mkdir('./Logs/'+source.name[:-4]+'-Laps')
+            print('Laps Dir created')
+        except:
+            pass
         #set Lap Data to save & remaining data
         source_remaining = pd.DataFrame(plotsource.data) #Get remaining data
         if Cut_From_Back.active == True:
@@ -594,19 +597,21 @@ def GPS_LapSplitter(source):
         
         #region LapSplitter
         counter = 1
+        plotsource = source_GPS 
         for laptime in laptimes:
-            plotsource = source_GPS 
             
             #Make Dir to Sava Lap Files 
             try:
                 os.mkdir('./Logs')
                 print('Logs Dir created')
             except:
-                try:
-                    os.mkdir('./Logs/'+source.name[:-4]+'-GPSLaps')
-                    print('GPSLaps Dir created')
-                except:
-                    pass
+                pass
+
+            try:
+                os.mkdir('./Logs/'+source.name[:-4]+'-GPSLaps')
+                print('GPSLaps Dir created')
+            except:
+                pass
                                 
             #set Lap Data to save & remaining data
             source_remaining = pd.DataFrame(plotsource.data) #Get remaining data
@@ -637,7 +642,7 @@ def GPS_LapSplitter(source):
             plotsource.data = source_remaining    
         
         plotsource_df = pd.DataFrame(plotsource.data)
-        plotsource_df.to_csv('./Logs/'+source.name[:-4]+'-Laps/'+source.name[:-4]+'-Remaining.csv')
+        plotsource_df.to_csv('./Logs/'+source.name[:-4]+'-GPSLaps/'+source.name[:-4]+'-Remaining.csv')
         LoadingDonetext.text = LoadingDonetext.text +  ' | Done!'
         Done_Button.label = 'Done'
         Done_Button.visible = True
