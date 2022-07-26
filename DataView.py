@@ -662,7 +662,7 @@ def GPS_LapSplitter(source):
         #Get All The GPS Points that are close to point1 of the line. 
         ClosePoints = NoDuplicatsGPSpoints[abs(NoDuplicatsGPSpoints['Latitude_converted']-point1[1])<100] #100 is arbitrary, just because its big. 
         ClosePoints = ClosePoints[abs(ClosePoints['Longitude_converted']-point1[0])<100]
-        ClosePoints = ClosePoints[ClosePoints['Speed (m/s)'] > 20] #Limit Speed. 
+        ClosePoints = ClosePoints[ClosePoints['Speed (kph)'] > 20] #Limit Speed. 
         #Re index Close Points DataFrame
         del ClosePoints['index']
         ClosePoints.index = range(len(ClosePoints.index)) 

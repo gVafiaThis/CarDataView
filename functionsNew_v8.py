@@ -49,7 +49,7 @@ def dataimport(file,name,*args):
     LonX,LatY = latlon2yx(df["Longitude"],df["Latitude"])
     df["Latitude_converted"] = LatY
     df["Longitude_converted"]= LonX
-    df["Speed (m/s)"] = df["Speed (m/s)"]*3.6
+    df["Speed (kph)"] = df["Speed (m/s)"]*3.6
     # df['Azimuth'] = [x if x<180 else x-360 for x in df['Azimuth']]
     source = ColumnDataSource(df,name = name)
     return source
@@ -67,7 +67,7 @@ def dataimport_filename(name,*args):
     LonX,LatY = latlon2yx(df["Longitude"],df["Latitude"])
     df["Latitude_converted"] = LatY
     df["Longitude_converted"]= LonX
-    df["Speed (m/s)"] = df["Speed (m/s)"]*3.6
+    df["Speed (kph)"] = df["Speed (m/s)"]*3.6
     # df['Azimuth'] = [x if x<180 else x-360 for x in df['Azimuth']]
     source = ColumnDataSource(df,name = name)
     return source
