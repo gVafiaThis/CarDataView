@@ -16,9 +16,7 @@ In the process of developing the dashboard, the result became an interactive das
 all wrapped in a UI. 
 
 ## Overview
-
-
-The fucntionalities of the package are presented below: 
+The whole thing runs in the browser. The fucntionalities of the package are presented below: 
 
 - ### ***Data Tab***
   Main functionality of the package: 
@@ -26,12 +24,13 @@ The fucntionalities of the package are presented below:
     - **_Add multiple sources of data_**, and view them simultaneously using the file browser (Import a .csv file)
     - **_Show/Hide sources of data_**, using the source hide checkbox
     - **_Linked Selection Between Channels & Map_**, so the location of where something happened in the data is easy to determine
-
+    -
+ _DataTab with one source._
 ![DATATAB_LargeData](https://user-images.githubusercontent.com/109922381/181355522-5217d984-861e-4060-b4e6-1de6deecda06.png)
-DataTab with one source.
 
+_DataTab with multiple sources. _
 ![DATATAB_Explainer where everything is](https://user-images.githubusercontent.com/109922381/181355627-1931ad1e-77e6-4c70-a961-727b91d36595.png)
-DataTab with multiple sources. 
+
 
 - ### ***Lap Splitting***
   2 different ways: 
