@@ -24,10 +24,10 @@ The whole thing runs in the browser. The fucntionalities of the package are pres
     - **_Add multiple sources of data_**, and view them simultaneously using the file browser (Import a .csv file)
     - **_Show/Hide sources of data_**, using the source hide checkbox
     - **_Linked Selection Between Channels & Map_**, so the location of where something happened in the data is easy to determine
-  \
+####Images\
  _DataTab with one source_
 ![DATATAB_LargeData](https://user-images.githubusercontent.com/109922381/181355522-5217d984-861e-4060-b4e6-1de6deecda06.png)
-  \
+ 
 _DataTab with multiple sources_
 ![DATATAB_Explainer where everything is](https://user-images.githubusercontent.com/109922381/181355627-1931ad1e-77e6-4c70-a961-727b91d36595.png)
 
@@ -39,19 +39,19 @@ _DataTab with multiple sources_
 
 
 
-         \n
+####Images\
 _Manual Lap Splitting_
 ![ManualLapSplit](https://user-images.githubusercontent.com/109922381/181355713-9e7b58c7-5e94-4a3d-988d-4eed24be78db.png)
-         \n
+
 _Automated GPS Lap Splitting_ 
 ![GPS_LapSplitter](https://user-images.githubusercontent.com/109922381/181355739-6a1887d3-6a50-40cb-a6dd-7c7ce2d4841f.png)
-          \n
+
 - ### ***Corrections for Misalignment***
   These functionalities are for cases where the phone is misaligned to the car. They work based on the fact that the phone measures the acceleration from gravity. 
     - **_Longitudinal/Vertical Misalignment_**, the phone is mounted correctly as far as the lateral forces are concerned, but its 2 other axes are misaligned. Needs data from the car being stationary. 
     - **_All Axes Misalignment_**, The phone is completely misaligned. Needs data from the car being stationary and the car accelerating in a straight line. 
 
-\n
+####Images\
 ![Misalignment](https://user-images.githubusercontent.com/109922381/181356072-53a00ae2-49a1-4f70-bac6-11389dfb7009.png)
 
 
