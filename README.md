@@ -1,4 +1,5 @@
 # DataView_car
+![DATATAB_LargeData_START](https://user-images.githubusercontent.com/109922381/181358198-92f7b48f-e65c-443c-b8e9-d842636ba0aa.png)
 
 ## Premise 
 This project came to be after I asked myself the question: 
@@ -16,7 +17,7 @@ In the process of developing the dashboard, the result became an interactive das
 all wrapped in a UI. 
 
 ## Overview
-The whole thing runs in the browser. The fucntionalities of the package are presented below: 
+The whole thing runs in the browser. The fucntionalities of the package are presented below (scroll down to Images section for images): 
 
 - ### ***Data Tab***
   Main functionality of the package: 
@@ -24,12 +25,8 @@ The whole thing runs in the browser. The fucntionalities of the package are pres
     - **_Add multiple sources of data_**, and view them simultaneously using the file browser (Import a .csv file)
     - **_Show/Hide sources of data_**, using the source hide checkbox
     - **_Linked Selection Between Channels & Map_**, so the location of where something happened in the data is easy to determine
-####Images\
- _DataTab with one source_
-![DATATAB_LargeData](https://user-images.githubusercontent.com/109922381/181355522-5217d984-861e-4060-b4e6-1de6deecda06.png)
- 
-_DataTab with multiple sources_
-![DATATAB_Explainer where everything is](https://user-images.githubusercontent.com/109922381/181355627-1931ad1e-77e6-4c70-a961-727b91d36595.png)
+
+
 
 
 - ### ***Lap Splitting***
@@ -39,21 +36,11 @@ _DataTab with multiple sources_
 
 
 
-####Images\
-_Manual Lap Splitting_
-![ManualLapSplit](https://user-images.githubusercontent.com/109922381/181355713-9e7b58c7-5e94-4a3d-988d-4eed24be78db.png)
-
-_Automated GPS Lap Splitting_ 
-![GPS_LapSplitter](https://user-images.githubusercontent.com/109922381/181355739-6a1887d3-6a50-40cb-a6dd-7c7ce2d4841f.png)
 
 - ### ***Corrections for Misalignment***
   These functionalities are for cases where the phone is misaligned to the car. They work based on the fact that the phone measures the acceleration from gravity. 
     - **_Longitudinal/Vertical Misalignment_**, the phone is mounted correctly as far as the lateral forces are concerned, but its 2 other axes are misaligned. Needs data from the car being stationary. 
     - **_All Axes Misalignment_**, The phone is completely misaligned. Needs data from the car being stationary and the car accelerating in a straight line. 
-
-####Images\
-![Misalignment](https://user-images.githubusercontent.com/109922381/181356072-53a00ae2-49a1-4f70-bac6-11389dfb7009.png)
-
 
 The dashboard plots data from the app [Physics Toolbox Sensor Suite](https://play.google.com/store/apps/details?id=com.chrystianvieyra.physicstoolboxsuite&hl=en&gl=US) and was tested with data gathered from android phones. \
 But there shouldn't be an issue with getting the data from an iphone.\
@@ -72,4 +59,14 @@ In the sample data folder there are some (slow) laps of Serres Circuit, with the
 
 For running from python, a requirements.txt is coming soon :) 
 
+## Images
+_DataTab with multiple sources_
+![DATATAB_Explainer where everything is](https://user-images.githubusercontent.com/109922381/181355627-1931ad1e-77e6-4c70-a961-727b91d36595.png)
 
+_Manual Lap Splitting_
+![ManualLapSplit](https://user-images.githubusercontent.com/109922381/181355713-9e7b58c7-5e94-4a3d-988d-4eed24be78db.png)
+
+_Automated GPS Lap Splitting_ 
+![GPS_LapSplitter](https://user-images.githubusercontent.com/109922381/181355739-6a1887d3-6a50-40cb-a6dd-7c7ce2d4841f.png)
+
+![Misalignment](https://user-images.githubusercontent.com/109922381/181356072-53a00ae2-49a1-4f70-bac6-11389dfb7009.png)
