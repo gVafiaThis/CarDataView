@@ -11,7 +11,7 @@ It gives you access to accelerations, rates, angles and positional data just by 
 With some creative thinking, you could say that you get all of that for free (beacuse you already have the phone).\
 Just mount the phone securely near the center of gravity and you can get some data from your laps (or transform the data to the center of gravity (upcoming feature) ).
 
-Already existing solutions for viewing car lap data are either very expensive or lack functionallity that I (at least) would require. \
+Already existing solutions for viewing car lap data are either very expensive or lack functionallity that I (at least) would require.\
 So,this project started out as a dashboard, built with the bokeh library of python, for viewing and manipulating that data.\
 In the process of developing the dashboard, the result became an interactive dashboard with some extra functionalities, 
 all wrapped in a UI. 
@@ -47,7 +47,7 @@ The whole thing runs in the browser. The fucntionalities of the package are pres
 >For now, the dashboard properly works with generated using Physics Toolbox, but soon it will work with any .csv with titles.
 
 ## How to Run
-Click Green code button and download .zip . From there, run the .exe. \
+Click Green code button and download .zip . From there, under Executable, run the .exe\
 In the sample data folder there are some (slow) laps of Serres Circuit, with the phone misaligned in the Long/Vert axes.\
 
 For running from python, a requirements.txt is coming soon :) 
