@@ -20,18 +20,18 @@ all wrapped in a UI.
 
 The fucntionalities of the package are presented below: 
 
-- ***Data Tab***\
+- # ***Data Tab***\
   Main functionality of the package: 
     - **_Create/Delete different channels_**, from the loaded data, using the channel selector
     - **_Add multiple sources of data_**, and view them simultaneously using the file browser (Import a .csv file)
     - **_Show/Hide sources of data_**, using the source hide checkbox
   
-- ***Lap Splitting***\
+- # ***Lap Splitting***\
   2 different ways: 
     - **_Manual Lap Splitting_**, if you know laptimes _from the moment you started/stopped recodring_ 
     - **_GPS Lap Splitting_**, draw the start/finish line on the map, and times are generated automatically
 
-- ***Corrections for Misalignment***\
+- # ***Corrections for Misalignment***\
   These functionalities are for cases where the phone is misaligned to the car. They work based on the fact that the phone measures the acceleration from gravity. 
     - **_Longitudinal/Vertical Misalignment_**, the phone is mounted correctly as far as the lateral forces are concerned, but its 2 other axes are misaligned. Needs data from the car being stationary. 
     - **_All Axes Misalignment_**, The phone is completely misaligned. Needs data from the car being stationary and the car accelerating in a straight line. 
