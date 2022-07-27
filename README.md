@@ -42,16 +42,9 @@ The whole thing runs in the browser. The fucntionalities of the package are pres
     - **_Longitudinal/Vertical Misalignment_**, the phone is mounted correctly as far as the lateral forces are concerned, but its 2 other axes are misaligned. Needs data from the car being stationary. 
     - **_All Axes Misalignment_**, The phone is completely misaligned. Needs data from the car being stationary and the car accelerating in a straight line. 
 
-The dashboard plots data from the app [Physics Toolbox Sensor Suite](https://play.google.com/store/apps/details?id=com.chrystianvieyra.physicstoolboxsuite&hl=en&gl=US) and was tested with data gathered from android phones. \
-But there shouldn't be an issue with getting the data from an iphone.\
-The  way to mount the phone is with the screen facing upwards, and the top of the phone facing forwards.\ 
-For now, the dashboard properly works with generated using Physics Toolbox, but soon it will work with any .csv with titles.
-
-## Detailed Description
-Coming Soon...
-  
-## Upcoming features
-Coming Soon...
+>The dashboard plots data from the app [Physics Toolbox Sensor Suite](https://play.google.com/store/apps/details?id=com.chrystianvieyra.physicstoolboxsuite&hl=en&gl=US) and was tested with data gathered from android phones.\
+>The  way to mount the phone is with the screen facing upwards, and the top of the phone facing forwards.\ 
+>For now, the dashboard properly works with generated using Physics Toolbox, but soon it will work with any .csv with titles.
 
 ## How to Run
 Click Green code button and download .zip . From there, run the .exe. \
@@ -70,3 +63,9 @@ _Automated GPS Lap Splitting_
 ![GPS_LapSplitter](https://user-images.githubusercontent.com/109922381/181355739-6a1887d3-6a50-40cb-a6dd-7c7ce2d4841f.png)
 
 ![Misalignment](https://user-images.githubusercontent.com/109922381/181356072-53a00ae2-49a1-4f70-bac6-11389dfb7009.png)
+
+## Detailed Description
+Coming Soon...
+  
+## Upcoming features
+Coming Soon...
