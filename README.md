@@ -9,7 +9,7 @@ The answer is a smartphone.
 
 It gives you access to accelerations, rates, angles and positional data just by recording the phone's sensor values.\
 With some creative thinking, you could say that you get all of that for free (beacuse you already have the phone).\
-Just mount the phone securely near the center of gravity and you can get some data from your laps (or transform the data to the center of gravity (upcoming feature) ).
+Just mount the phone securely near the center of gravity and you can get some relatively accurate data from your laps (or transform the data to the center of gravity (upcoming feature) ).
 
 Already existing solutions for viewing car lap data are either very expensive or lack functionallity that I (at least) would require.\
 So,this project started out as a dashboard, built with the bokeh library of python, for viewing and manipulating that data.\
@@ -48,7 +48,7 @@ The whole thing runs in the browser. The fucntionalities of the package are pres
 
 ## How to Run
 Click Green code button and download .zip . From there, under Executable, run the .exe\
-In the sample data folder there are some (slow) laps of Serres Circuit, with the phone misaligned in the Long/Vert axes.\
+In the sample data folder there are some (slow) laps of Serres Circuit, with the phone misaligned in the Long/Vert axes.
 
 For running from python, a requirements.txt is coming soon :) 
 
@@ -56,12 +56,13 @@ For running from python, a requirements.txt is coming soon :)
 _DataTab with multiple sources_
 ![DATATAB_Explainer where everything is](https://user-images.githubusercontent.com/109922381/181355627-1931ad1e-77e6-4c70-a961-727b91d36595.png)
 
-_Manual Lap Splitting_
+_Manual Lap Splitting UI_
 ![ManualLapSplit](https://user-images.githubusercontent.com/109922381/181355713-9e7b58c7-5e94-4a3d-988d-4eed24be78db.png)
 
-_Automated GPS Lap Splitting_ 
+_Automated GPS Lap Splitting UI_ 
 ![GPS_LapSplitter](https://user-images.githubusercontent.com/109922381/181355739-6a1887d3-6a50-40cb-a6dd-7c7ce2d4841f.png)
 
+_Misalignment Correction UI_ 
 ![Misalignment](https://user-images.githubusercontent.com/109922381/181356072-53a00ae2-49a1-4f70-bac6-11389dfb7009.png)
 
 ## Detailed Description
