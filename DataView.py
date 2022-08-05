@@ -15,33 +15,6 @@ import statistics
 import re #for regex recognision in text input
 from bokeh.events import DoubleTap
 
-#0.2 Changelog-> Make MultiChoice for plots appering/disappearing.
-#0.3 Changelog-> Add your data with Fileinput - On Open, Loads Lap1.
-#0.35 Changelog-> Start with blank page. Import file and then stuff appears in tabs. Major Redisign. Addeed the concept of current_sources(active source)
-#0.36 Changelog -> Step to add Capability to use multiple sources on a tab. Added the concept of many current_sources on current Tab. 
-#0.37 Changelog -> Change of basic functions in New functions v2 to support multiple sources on a tab. Current_source became Current_sources and now is a list.
-#                  Changed names in multi select to be the first source's column names 
-#0.371 Changelog -> Redisign. Sources,ChartIDs,MapIDs are saved on dict tabs_contents. DataTab now takes a source as input. 
-#0.38 Changelog -> Add Checkbox group to hide plots in the same tab. Add Comments. Hide map with checkbox also
-#0.39 Changelog -> imports cleanup
-#0.4 Changelog -> add colors to plots. Works finally. Got Hide/Show Checkbox to the right of everythin
-#0.5 Changelog -> Using functionsNew_v4 -> Plots on add source happen with new functions. 
-#0.6 Changelog -> Starts from python file
-#0.7 Changelog -> Try to close. Failed. wasted time. starts with bokeh serve again
-#0.8 Changelog ->Layout made a bit better. Add common croshair and (not common)tooltip to all plots. add linked zooming
-#0.85 Changelog ->cosmetic stuff. Remove ticks from map. Added Datetimeimport option
-#0.86 Changelog -> toggle for datetime import. Removed Tooltip. Was now working proprely. Is Slow in add_source, have to find why
-#0.87 Changelog -> Left it here. Didnt do Delete Tab
-#0.88 Changelog -> Add Delete Tab. Added map plot hide functionality if map has a tile renderer in it
-#0.9 Changelog -> FunctionsNew_v6 with simple visualization function. Restructure the way code is written with regions. Add Data Slicer. Add Misalignment Correction
-#0.91 Changelog -> FunctionsNew_v7 add datatransform_rotate function and implement into misalignment functions here. 
-#0.915 Changelog -> HUGE CHANGE: Save unchanged to mercator Lat&Long to source. The lats&longs you plot are now Lat_converted,Long_converted
-#                   Add Lap_Splitter with written time in seconds. 
-#0.916 Changelog -> Standalone Document,  
-#0.917 Changelog -> Read csv from wherever. Change in DataTab to include fileinput ID in tabs_contents to find fileinput.value.
-#0.92 Changelog -> Fixing bugs. 
-#                   Removed og read_csv from all assistant functionalities because we now read files from everyhere in the system. 
-#0.921              Misalignment LongVert gives opposite longitudinal data to Misalignment ALL. Changed it so that right hand rule is followed, x - lateral, y-longitudinal, z- vertical(lookingDown). added a minus to np.cross.
 
 
 #-----------------------------------Functions For Tab Layouts-----------------------------------
